@@ -38,10 +38,8 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         mCompositeDisposable = new CompositeDisposable();
         mRootView = createView(inflater, container);
         renderView(savedInstanceState);
-        if (mPresenter == null) {
-            AndroidSupportInjection.inject(this);
-        }
-        onPresenterReady(mPresenter);
+        AndroidSupportInjection.inject(this);
+        onPresenterReady(mPresenter, savedInstanceState == null);
         return mRootView;
     }
 
@@ -64,7 +62,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
 
     protected abstract void reflectState(@Nonnull S state);
 
-    protected abstract void onPresenterReady(@Nonnull T mPresenter);
+    protected abstract void onPresenterReady(@Nonnull T presenter, boolean isFirstAttach);
 
     protected abstract void renderView(Bundle savedInstanceState);
 
@@ -85,11 +83,5 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
             mCompositeDisposable.dispose();
         }
         super.onDestroyView();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 }

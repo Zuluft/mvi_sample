@@ -18,14 +18,20 @@ public class App
     @Inject
     DispatchingAndroidInjector<Activity> mAndroidInjector;
 
+    private AppComponent mAppComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerAppComponent
+        mAppComponent = DaggerAppComponent
                 .builder()
                 .application(this)
-                .build()
-                .inject(this);
+                .build();
+        mAppComponent.inject(this);
+    }
+
+    public AppComponent getAppComponent() {
+        return mAppComponent;
     }
 
     @Override

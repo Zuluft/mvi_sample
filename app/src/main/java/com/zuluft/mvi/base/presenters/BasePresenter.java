@@ -11,21 +11,18 @@ import io.reactivex.subjects.BehaviorSubject;
 public abstract class BasePresenter<S, T extends BaseView<S>> {
 
     private T mView;
-    private boolean mWasAttached;
     private S mOldState;
     private final BehaviorSubject<S> mBehaviorSubject = BehaviorSubject.create();
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
-    public final void attach(@Nonnull T view) {
+    public final void attach(@Nonnull T view, boolean isFirstAttach) {
         this.mView = view;
         mView.states(mBehaviorSubject);
-        if (!mWasAttached) {
+        if (isFirstAttach) {
             mOldState = generateInitialState();
             mBehaviorSubject.onNext(mOldState);
         }
-        onAttach(!mWasAttached);
-        mWasAttached = true;
-
+        onAttach(isFirstAttach);
     }
 
     public final void detach() {

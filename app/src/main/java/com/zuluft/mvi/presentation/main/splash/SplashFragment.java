@@ -21,8 +21,9 @@ public class SplashFragment
     }
 
     @Override
-    protected void onPresenterReady(@Nonnull final SplashPresenter mPresenter) {
-        mPresenter.attach(this);
+    protected void onPresenterReady(@Nonnull final SplashPresenter mPresenter,
+                                    final boolean isFirstAttach) {
+        mPresenter.attach(this, isFirstAttach);
     }
 
     @Override
