@@ -1,6 +1,5 @@
 package com.zuluft.mvi.presentation.main;
 
-import com.orhanobut.logger.Logger;
 import com.zuluft.mvi.base.presenters.BasePresenter;
 import com.zuluft.mvi.base.scopes.PerActivity;
 import com.zuluft.mvi.presentation.main.actions.DrawLoginScreenAction;
@@ -19,7 +18,7 @@ public class MainPresenter
 
     @Inject
     MainPresenter() {
-        Logger.d("MainPresenter constructor");
+
     }
 
     @Nonnull

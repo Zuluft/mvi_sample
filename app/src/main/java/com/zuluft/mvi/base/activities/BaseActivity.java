@@ -1,6 +1,7 @@
 package com.zuluft.mvi.base.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.zuluft.mvi.base.annotations.LayoutResourceId;
 import com.zuluft.mvi.base.presenters.BasePresenter;
@@ -19,7 +20,6 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
         extends
         SafeFragmentTransactorActivity {
 
-    private Lazy<T> mLazyPresenter;
     private T mPresenter;
     private CompositeDisposable mCompositeDisposable;
 
@@ -34,14 +34,14 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
         }
         renderView(savedInstanceState);
         AndroidInjection.inject(this);
-        onPresenterReady(mPresenter, savedInstanceState == null);
+        onPresenterReady(mPresenter);
     }
 
     protected abstract void renderView(@Nullable Bundle savedInstanceState);
 
-    protected abstract void onPresenterReady(@Nonnull T presenter, boolean isFirstAttach);
+    protected abstract void onPresenterReady(@Nonnull T presenter);
 
-    public final void states(Observable<S> observable) {
+    public final void states(@NonNull Observable<S> observable) {
         mCompositeDisposable.add(observable.subscribe(this::reflectState));
     }
 
@@ -52,21 +52,21 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
     final void setPresenter(@Nonnull Lazy<T> lazyPresenter) {
         Object object = getLastCustomNonConfigurationInstance();
         if (object != null) {
-            lazyPresenter = (Lazy<T>) object;
+            mPresenter = (T) object;
+        } else {
+            mPresenter = lazyPresenter.get();
         }
-        mLazyPresenter = lazyPresenter;
-        mPresenter = mLazyPresenter.get();
     }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return mLazyPresenter;
+        return mPresenter;
     }
 
 
     @Override
     protected void onDestroy() {
-        mPresenter.detach();
+        mPresenter.detach(isFinishing());
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }

@@ -1,6 +1,10 @@
 package com.zuluft.mvi.base.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -26,6 +31,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
     private CompositeDisposable mCompositeDisposable;
     protected View mRootView;
     private SafeFragmentTransaction mSafeFragmentTransaction;
+    protected Context mLastContext;
 
     @Nullable
     @Override
@@ -39,7 +45,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         mRootView = createView(inflater, container);
         renderView(savedInstanceState);
         AndroidSupportInjection.inject(this);
-        onPresenterReady(mPresenter, savedInstanceState == null);
+        onPresenterReady(mPresenter);
         return mRootView;
     }
 
@@ -51,18 +57,20 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         }
     }
 
-    public final void states(Observable<S> observable) {
+    public final void states(@NonNull Observable<S> observable) {
         mCompositeDisposable.add(observable.subscribe(this::reflectState));
     }
 
     @Inject
-    final void setPresenter(@Nonnull T presenter) {
-        mPresenter = presenter;
+    final void setPresenter(@Nonnull Lazy<T> lazyPresenter) {
+        if (mPresenter == null) {
+            mPresenter = lazyPresenter.get();
+        }
     }
 
     protected abstract void reflectState(@Nonnull S state);
 
-    protected abstract void onPresenterReady(@Nonnull T presenter, boolean isFirstAttach);
+    protected abstract void onPresenterReady(@Nonnull T presenter);
 
     protected abstract void renderView(Bundle savedInstanceState);
 
@@ -76,12 +84,45 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         return rootView;
     }
 
+    protected final <V extends View> V finViewById(@IdRes final int id) {
+        return mRootView.findViewById(id);
+    }
+
     @Override
     public void onDestroyView() {
-        mPresenter.detach();
+        mPresenter.detach(false);
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.detach(true);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        afterAttach(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        afterAttach(activity);
+    }
+
+    protected void afterAttach(@NonNull final Context context) {
+        mLastContext = context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 }

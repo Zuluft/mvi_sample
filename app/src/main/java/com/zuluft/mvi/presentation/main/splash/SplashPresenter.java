@@ -12,7 +12,7 @@ public class SplashPresenter
         BasePresenter<SplashViewState, SplashView> {
 
     @Inject
-    public SplashPresenter() {
+    SplashPresenter() {
     }
 
     @Nonnull

@@ -6,29 +6,38 @@ import com.zuluft.mvi.base.views.BaseView;
 import javax.annotation.Nonnull;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 
 public abstract class BasePresenter<S, T extends BaseView<S>> {
 
-    private T mView;
+    protected T mView;
     private S mOldState;
     private final BehaviorSubject<S> mBehaviorSubject = BehaviorSubject.create();
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private boolean mIsFirstAttach = true;
 
-    public final void attach(@Nonnull T view, boolean isFirstAttach) {
+    public final void attach(@Nonnull T view) {
         this.mView = view;
         mView.states(mBehaviorSubject);
-        if (isFirstAttach) {
+        if (mIsFirstAttach) {
             mOldState = generateInitialState();
             mBehaviorSubject.onNext(mOldState);
         }
-        onAttach(isFirstAttach);
+        onAttach(mIsFirstAttach);
+        mIsFirstAttach = false;
     }
 
-    public final void detach() {
+    public final void detach(boolean destroy) {
         onDetach();
-        mCompositeDisposable.dispose();
+        if (destroy) {
+            mCompositeDisposable.dispose();
+        }
         mView = null;
+    }
+
+    protected final void registerDisposables(Disposable... disposables) {
+        mCompositeDisposable.addAll(disposables);
     }
 
     @SuppressWarnings("WeakerAccess")

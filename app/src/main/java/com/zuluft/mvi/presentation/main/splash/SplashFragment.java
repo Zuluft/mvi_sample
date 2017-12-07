@@ -21,9 +21,8 @@ public class SplashFragment
     }
 
     @Override
-    protected void onPresenterReady(@Nonnull final SplashPresenter mPresenter,
-                                    final boolean isFirstAttach) {
-        mPresenter.attach(this, isFirstAttach);
+    protected void onPresenterReady(@Nonnull final SplashPresenter mPresenter) {
+        mPresenter.attach(this);
     }
 
     @Override
@@ -36,5 +35,15 @@ public class SplashFragment
         SplashFragment fragment = new SplashFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
