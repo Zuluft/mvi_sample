@@ -27,12 +27,14 @@ public class MainPresenter
         return MainViewState.builder().state(MainViewState.SPLASH_SCREEN).build();
     }
 
+    protected void onAttach() {
+
+    }
+
     @Override
-    protected void onAttach(boolean firstAttach) {
-        if (firstAttach) {
-            Observable.just(new DrawLoginScreenAction())
-                    .delay(10, TimeUnit.SECONDS)
-                    .subscribe(this::dispatch);
-        }
+    protected void onFirstAttach() {
+        Observable.just(new DrawLoginScreenAction())
+                .delay(10, TimeUnit.SECONDS)
+                .subscribe(this::dispatch);
     }
 }

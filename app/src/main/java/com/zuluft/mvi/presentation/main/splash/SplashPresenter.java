@@ -15,6 +15,11 @@ public class SplashPresenter
     SplashPresenter() {
     }
 
+    @Override
+    protected void onFirstAttach() {
+
+    }
+
     @Nonnull
     @Override
     protected SplashViewState generateInitialState() {
@@ -22,7 +27,7 @@ public class SplashPresenter
     }
 
     @Override
-    protected void onAttach(boolean firstAttach) {
+    protected void onAttach() {
 
     }
 }

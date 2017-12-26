@@ -49,6 +49,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         return mRootView;
     }
 
+    @SuppressWarnings("unused")
     public final SafeFragmentTransaction getSafeFragmentTransaction() {
         if (this.mSafeFragmentTransaction == null) {
             throw new RuntimeException("getSafeFragmentTransaction() method was called before onCreateView()");
@@ -57,6 +58,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
         }
     }
 
+    @SuppressWarnings("unused")
     public final void states(@NonNull Observable<S> observable) {
         mCompositeDisposable.add(observable.subscribe(this::reflectState));
     }
@@ -90,7 +92,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
 
     @Override
     public void onDestroyView() {
-        mPresenter.detach(false);
+        mPresenter.detach();
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
@@ -99,7 +101,6 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
 
     @Override
     public void onDestroy() {
-        mPresenter.detach(true);
         super.onDestroy();
     }
 

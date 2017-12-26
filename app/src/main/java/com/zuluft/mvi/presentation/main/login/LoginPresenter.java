@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @PerFragment
@@ -30,6 +29,8 @@ public class LoginPresenter
         mLoginUseCase = loginUseCase;
     }
 
+
+
     @Nonnull
     @Override
     protected LoginViewState generateInitialState() {
@@ -38,15 +39,17 @@ public class LoginPresenter
     }
 
     @Override
-    protected void onAttach(boolean firstAttach) {
-        registerDisposables(
-                subscribeLoginClickIntent()
-        );
+    protected void onAttach() {
+        subscribeLoginClickIntent();
     }
 
-    @NonNull
-    private Disposable subscribeLoginClickIntent() {
-        return mView.loginClickIntent().flatMap(loginDataModel ->
+    @Override
+    protected void onFirstAttach() {
+
+    }
+
+    private void subscribeLoginClickIntent() {
+        mView.loginClickIntent().flatMap(loginDataModel ->
                 mLoginUseCase.createObservable(loginDataModel)
                         .map(userModel -> new LoginSuccessAction())
                         .cast(Action.class)

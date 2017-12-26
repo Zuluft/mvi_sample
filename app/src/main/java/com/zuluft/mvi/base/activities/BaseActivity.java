@@ -41,6 +41,7 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
 
     protected abstract void onPresenterReady(@Nonnull T presenter);
 
+    @SuppressWarnings("unused")
     public final void states(@NonNull Observable<S> observable) {
         mCompositeDisposable.add(observable.subscribe(this::reflectState));
     }
@@ -66,7 +67,7 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
 
     @Override
     protected void onDestroy() {
-        mPresenter.detach(isFinishing());
+        mPresenter.detach();
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
