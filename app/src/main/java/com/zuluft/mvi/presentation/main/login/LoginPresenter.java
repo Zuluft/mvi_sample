@@ -29,8 +29,6 @@ public class LoginPresenter
         mLoginUseCase = loginUseCase;
     }
 
-
-
     @Nonnull
     @Override
     protected LoginViewState generateInitialState() {
@@ -41,11 +39,6 @@ public class LoginPresenter
     @Override
     protected void onAttach() {
         subscribeLoginClickIntent();
-    }
-
-    @Override
-    protected void onFirstAttach() {
-
     }
 
     private void subscribeLoginClickIntent() {
@@ -59,4 +52,11 @@ public class LoginPresenter
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::dispatch);
     }
+
+    @Override
+    protected void onFirstAttach() {
+
+    }
+
+
 }

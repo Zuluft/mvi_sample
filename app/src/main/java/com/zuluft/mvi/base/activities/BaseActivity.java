@@ -71,6 +71,9 @@ public abstract class BaseActivity<S, T extends BasePresenter<S, ?>>
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
+        if (isFinishing()) {
+            mPresenter.onDestroy();
+        }
         super.onDestroy();
     }
 }

@@ -39,6 +39,11 @@ public abstract class BasePresenter<S, T extends BaseView<S>> {
     }
 
     @SuppressWarnings("unused")
+    public void onDestroy() {
+
+    }
+
+    @SuppressWarnings("unused")
     protected abstract void onFirstAttach();
 
     protected final <Q extends Action<S>> void dispatch(@Nonnull Q action) {

@@ -7,7 +7,8 @@ import com.zuluft.mvi.presentation.main.login.LoginViewState;
 import javax.annotation.Nonnull;
 
 public class LoginFailedAction
-        implements Action<LoginViewState> {
+        implements
+        Action<LoginViewState> {
 
     private final Throwable mThrowable;
 

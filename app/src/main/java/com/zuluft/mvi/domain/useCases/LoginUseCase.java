@@ -17,7 +17,7 @@ public class LoginUseCase
         BaseUseCase<UserModel, LoginDataModel> {
 
     @Inject
-    LoginUseCase(@NonNull Repository repository) {
+    LoginUseCase(@NonNull final Repository repository) {
         super(repository);
     }
 

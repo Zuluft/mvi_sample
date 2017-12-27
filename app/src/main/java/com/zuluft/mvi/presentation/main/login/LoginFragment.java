@@ -97,8 +97,10 @@ public class LoginFragment
     @Override
     public Observable<LoginDataModel> loginClickIntent() {
         return RxView.clicks(mBtnLogin)
-                .map(o -> LoginDataModel.create(mEtUsername.getText().toString(),
-                        mEtPassword.getText().toString()));
+                .map(o -> LoginDataModel.create(
+                        mEtUsername.getText().toString(),
+                        mEtPassword.getText().toString())
+                );
     }
 
     @Override

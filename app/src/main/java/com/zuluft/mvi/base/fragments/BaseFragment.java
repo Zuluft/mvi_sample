@@ -101,6 +101,7 @@ public abstract class BaseFragment<S, T extends BasePresenter<S, ?>>
 
     @Override
     public void onDestroy() {
+        mPresenter.onDestroy();
         super.onDestroy();
     }
 
